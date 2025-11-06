@@ -4,7 +4,7 @@ Compliance validator for checking adherence to skill-creator guidelines.
 """
 
 import re
-import yaml
+from yaml import safe_load
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
 
@@ -127,8 +127,8 @@ class ComplianceValidator:
 
             # Parse YAML
             try:
-                yaml_data = yaml.safe_load(yaml_content)
-            except yaml.YAMLError as e:
+                yaml_data = safe_load(yaml_content)
+            except Exception as e:  # Catch all YAML parsing errors
                 self.violations.append(f"CRITICAL: Invalid YAML syntax: {e}")
                 return 0.0, None
 
@@ -394,7 +394,7 @@ class ComplianceValidator:
 
                     parts = content.split('---', 2)
                     if len(parts) >= 3:
-                        yaml_data = yaml.safe_load(parts[1])
+                        yaml_data = safe_load(parts[1])
 
                         if 'name' in yaml_data:
                             standards.append("✓ Name field present")

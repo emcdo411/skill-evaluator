@@ -1,6 +1,6 @@
 ---
 name: skill-evaluator
-description: Comprehensive evaluation toolkit for analyzing Claude skills across security, quality, utility, and compliance dimensions. This skill should be used when users need to evaluate a skill before installation, review a skill before publishing, or assess overall skill quality and safety. Performs deep security analysis with 5-layer protection architecture, validates structure and documentation quality, checks compliance with skill-creator guidelines, and generates detailed markdown reports with scoring and recommendations.
+description: Comprehensive evaluation toolkit for analyzing Claude skills across security, quality, utility, and compliance dimensions. This skill should be used when users need to evaluate a skill before installation, review before publishing, or assess overall quality and safety. Performs 5-layer security analysis, validates structure and documentation, checks compliance with skill-creator guidelines, and generates markdown reports with scoring and recommendations.
 ---
 
 # Skill Evaluator
