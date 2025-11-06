@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2025 skill-evaluator contributors
+# SPDX-License-Identifier: MIT
+
 """
 Quality checker for evaluating code quality, documentation, structure, and utility.
 """

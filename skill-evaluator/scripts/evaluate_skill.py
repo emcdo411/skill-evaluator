@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2025 skill-evaluator contributors
+# SPDX-License-Identifier: MIT
+
 """
 Main orchestrator for skill evaluation.
 Coordinates security, quality, utility, and compliance analyses.
@@ -20,6 +23,34 @@ from security_scanner import SecurityScanner
 from quality_checker import QualityChecker
 from compliance_validator import ComplianceValidator
 from report_generator import ReportGenerator
+
+
+# Configure stdout encoding for Unicode support on Windows
+if sys.platform == 'win32':
+    try:
+        # Try to reconfigure stdout to use UTF-8
+        sys.stdout.reconfigure(encoding='utf-8')
+    except (AttributeError, OSError):
+        # Fallback for older Python versions or restricted environments
+        import codecs
+        sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
+
+
+def safe_print(text: str) -> None:
+    """Print text with Unicode, falling back to ASCII if needed."""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        # Strip Unicode and replace with ASCII equivalents
+        replacements = {
+            '✅': '[OK]',
+            '❌': '[X]',
+            '⚠️': '[!]',
+            '✓': '[+]',
+        }
+        for uni, asc in replacements.items():
+            text = text.replace(uni, asc)
+        print(text)
 
 
 class SkillEvaluator:
@@ -128,7 +159,7 @@ class SkillEvaluator:
         )
 
         # Determine risk level
-        risk_level = self._determine_risk_level(security_score)
+        risk_level = self._determine_risk_level(overall, security_score)
 
         return {
             'overall_score': round(overall, 1),
@@ -170,16 +201,24 @@ class SkillEvaluator:
         else:
             return "❌ DO NOT INSTALL"
 
-    def _determine_risk_level(self, security_score: float) -> str:
-        """Determine overall risk level based on security score."""
-        if security_score >= 90:
-            return "Low"
-        elif security_score >= 75:
-            return "Medium"
-        elif security_score >= 50:
-            return "High"
-        else:
+    def _determine_risk_level(self, overall_score: float, security_score: float) -> str:
+        """
+        Determine overall risk level based on both overall score and security.
+        Prioritizes security concerns while considering overall quality.
+        """
+        # Critical security issues override everything
+        if security_score < 50:
             return "Critical"
+        
+        # Use overall score as primary indicator
+        if overall_score >= 90:
+            return "Low"
+        elif overall_score >= 75:
+            return "Low-Medium"
+        elif overall_score >= 60:
+            return "Medium"
+        else:
+            return "High"
 
     def evaluate(self) -> Dict[str, Any]:
         """
@@ -287,7 +326,7 @@ def main():
 
         # Output to console if no file specified
         if not args.output:
-            print(report)
+            safe_print(report)
 
         # Save JSON if requested
         if args.json:

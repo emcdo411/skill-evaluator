@@ -1,5 +1,7 @@
 ---
 name: skill-evaluator
+version: 1.2.1
+license: MIT
 description: Comprehensive evaluation toolkit for analyzing Claude skills across security, quality, utility, and compliance dimensions. This skill should be used when users need to evaluate a skill before installation, review before publishing, or assess overall quality and safety. Performs 5-layer security analysis, validates structure and documentation, checks compliance with skill-creator guidelines, and generates markdown reports with scoring and recommendations.
 ---
 
@@ -213,6 +215,53 @@ Write report to `{skill_name}_evaluation_report.md` and present to user.
 - ❌ Performance at scale
 - ❌ Novel attack vectors
 - ❌ Subjective satisfaction
+
+## ⚠️ Important Disclaimers
+
+**READ CAREFULLY BEFORE USING THIS SKILL**
+
+### No Guarantee of Safety
+
+**This evaluation CANNOT determine with certainty that a skill is safe.** Like all security analysis tools:
+
+- **Cannot prove absence of vulnerabilities** - Only detect known patterns; novel or obfuscated attacks may go undetected
+- **Static analysis limitations** - Cannot assess runtime behavior, dynamic code execution, or context-dependent risks
+- **False negatives possible** - Sophisticated malicious code may evade pattern-based detection
+- **Time-bound assessment** - New vulnerabilities may be discovered after evaluation
+
+### Use as ONE Input Only
+
+**This evaluation should be used as ONE input into your security decision, not the sole determining factor.**
+
+You are responsible for:
+
+1. **Manual code review** - Read and understand the skill's code yourself
+2. **Test in isolated environment** - Run skills in sandboxed/test environments first
+3. **Organizational policies** - Always follow your organization's security policies and approval processes
+4. **Risk assessment** - Consider your specific threat model and risk tolerance
+5. **Ongoing monitoring** - Continue to monitor skill behavior after installation
+
+### Your Responsibility
+
+- **YOU are responsible for skills you install** - Not the evaluator, not the skill author
+- **Follow organizational policies** - Security policies override any evaluation recommendation
+- **Trust but verify** - Even "HIGHLY RECOMMENDED" skills should be reviewed
+- **When in doubt, don't install** - If unsure about a skill's safety, consult security experts
+
+### Limitations of Automated Analysis
+
+This tool performs **pattern-based static analysis**, which means:
+
+- ✅ Good at: Detecting common vulnerability patterns, structural issues, compliance violations
+- ❌ Cannot detect: Zero-day exploits, logic bombs, social engineering, supply chain attacks
+- ❌ Cannot assess: Author trustworthiness, long-term maintenance, backdoor triggers
+- ❌ Cannot guarantee: Complete security, absence of malicious intent, future safety
+
+### Legal Disclaimer
+
+**NO WARRANTIES**: This evaluation tool is provided "as-is" without warranties of any kind. The authors and contributors assume no liability for damages resulting from use of this tool or skills evaluated by it.
+
+**USE AT YOUR OWN RISK**: You accept all risks associated with installing and using evaluated skills.
 
 ## Examples
 

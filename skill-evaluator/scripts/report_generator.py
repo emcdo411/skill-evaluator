@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2025 skill-evaluator contributors
+# SPDX-License-Identifier: MIT
+
 """
 Report generator for creating markdown evaluation reports.
 """
@@ -11,11 +14,47 @@ from typing import Dict, Any
 class ReportGenerator:
     """Generates formatted markdown reports from evaluation results."""
 
-    VERSION = "1.0.0"
+    VERSION = "1.2.1"  # Fallback version
 
     def __init__(self, results: Dict[str, Any]):
         """Initialize generator with evaluation results."""
         self.results = results
+        # Read version dynamically from SKILL.md
+        self.version = self._get_version()
+
+    def _get_version(self) -> str:
+        """
+        Get version from SKILL.md YAML frontmatter.
+        Falls back to hardcoded VERSION if unable to read.
+        """
+        try:
+            # Get path to SKILL.md (parent of scripts directory)
+            script_dir = Path(__file__).parent  # evaluator: ignore - safe internal path
+            skill_dir = script_dir.parent
+            skill_md_path = skill_dir / "SKILL.md"
+
+            if not skill_md_path.exists():
+                return self.VERSION
+
+            # Read SKILL.md and extract version from YAML frontmatter
+            content = skill_md_path.read_text(encoding='utf-8')
+
+            # Extract YAML frontmatter
+            if content.startswith('---'):
+                parts = content.split('---', 2)
+                if len(parts) >= 3:
+                    yaml_content = parts[1]
+                    # Parse version field (using simple string parsing to avoid YAML dependency here)
+                    for yaml_line in yaml_content.split('\n'):
+                        if yaml_line.strip().startswith('version:'):
+                            version = yaml_line.split(':', 1)[1].strip()
+                            return version
+
+            # Fallback if version not found
+            return self.VERSION
+        except Exception:
+            # If anything goes wrong, use fallback
+            return self.VERSION
 
     def generate(self) -> str:
         """
@@ -59,7 +98,7 @@ class ReportGenerator:
         replacements = {
             '{skill_name}': metadata.get('skill_name', 'Unknown'),
             '{evaluation_date}': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            '{evaluator_version}': self.VERSION,
+            '{evaluator_version}': self.version,
             '{overall_score}': str(overall.get('overall_score', 0)),
             '{recommendation}': overall.get('recommendation', 'Unknown'),
             '{risk_level}': overall.get('risk_level', 'Unknown'),
@@ -455,6 +494,16 @@ class ReportGenerator:
 
 **Risk Level:** {risk_level}
 
+### Score Breakdown
+
+| Dimension | Score | Weight |
+|-----------|-------|--------|
+| **Security** | {security_score}/100 | 35% |
+| **Quality** | {quality_score}/100 | 25% |
+| **Utility** | {utility_score}/100 | 20% |
+| **Compliance** | {compliance_score}/100 | 20% |
+| **Overall** | **{overall_score}/100** | **100%** |
+
 ### Key Findings
 
 {key_findings}
@@ -545,6 +594,76 @@ class ReportGenerator:
 ## Conclusion
 
 {conclusion}
+---
+
+## ⚠️ Important Disclaimers
+
+**READ CAREFULLY BEFORE ACTING ON THIS EVALUATION**
+
+### No Guarantee of Safety
+
+This evaluation **CANNOT determine with certainty that a skill is safe.** Security analysis has inherent limitations:
+
+- **Cannot prove absence of vulnerabilities** - Static analysis detects known patterns but cannot prove a skill is vulnerability-free
+- **False negatives are possible** - Novel attacks, obfuscated code, or sophisticated malicious techniques may evade detection
+- **Static analysis limitations** - Cannot assess runtime behavior, dynamic execution, or context-dependent security risks
+- **Time-bound assessment** - New vulnerabilities may be discovered after this evaluation was performed
+
+### Use as ONE Input Only
+
+**This evaluation should be used as ONE input into your security decision, not the sole determining factor.**
+
+### Your Responsibilities
+
+Before installing ANY skill, regardless of evaluation score:
+
+1. **Manual code review** - Read and understand the skill's code yourself
+2. **Test in isolation** - Run in sandboxed or test environments before production use
+3. **Follow organizational policies** - Security policies override any recommendation in this report
+4. **Assess your risk** - Consider your specific threat model, data sensitivity, and risk tolerance
+5. **Monitor ongoing** - Continue monitoring skill behavior after installation
+
+### You Are Responsible
+
+- **YOU are responsible for skills you install** - Not this evaluator, not the skill author
+- **Security policies take precedence** - If your organization prohibits certain actions, this report doesn't override that
+- **"HIGHLY RECOMMENDED" ≠ "SAFE"** - Even top-scoring skills require review and may contain undiscovered vulnerabilities
+- **When uncertain, consult experts** - If unsure about a skill's safety, seek guidance from security professionals
+
+### Limitations of This Analysis
+
+This tool performs **pattern-based static code analysis** with known limitations:
+
+**✅ Can Detect:**
+- Common vulnerability patterns (injection, traversal, etc.)
+- Structural and organizational issues
+- Compliance violations with skill-creator guidelines
+- Code quality and documentation problems
+
+**❌ Cannot Detect:**
+- Zero-day exploits or novel attack vectors
+- Logic bombs or time-delayed malicious behavior
+- Social engineering or supply chain attacks
+- Backdoors triggered by specific conditions
+- Malicious intent disguised as legitimate functionality
+
+**❌ Cannot Assess:**
+- Author trustworthiness or reputation
+- Long-term maintenance and support
+- Runtime performance or behavior
+- Compatibility with your specific environment
+
+### Legal Disclaimer
+
+**NO WARRANTIES**: This evaluation is provided "as-is" without warranties of any kind, express or implied. The authors and contributors of this tool assume NO LIABILITY for any damages, losses, security breaches, or other consequences resulting from:
+
+- Use of this evaluation tool
+- Reliance on evaluation results
+- Installation of evaluated skills
+- Any actions taken based on this report
+
+**USE AT YOUR OWN RISK**: By using this evaluation, you acknowledge and accept all risks associated with skill installation and use.
+
 
 ---
 

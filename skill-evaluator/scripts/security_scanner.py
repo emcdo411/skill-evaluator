@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2025 skill-evaluator contributors
+# SPDX-License-Identifier: MIT
+
 """
 Security scanner implementing 5-layer security architecture.
 Performs deep vulnerability analysis on Claude skills.

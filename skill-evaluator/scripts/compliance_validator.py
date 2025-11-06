@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2025 skill-evaluator contributors
+# SPDX-License-Identifier: MIT
+
 """
 Compliance validator for checking adherence to skill-creator guidelines.
 """
