@@ -1,0 +1,20 @@
+# Python dependencies for skill-evaluator
+
+# YAML parsing (for frontmatter)
+PyYAML>=6.0
+
+# All scripts use only Python standard library otherwise:
+# - pathlib (stdlib)
+# - re (stdlib)
+# - ast (stdlib)
+# - json (stdlib)
+# - tempfile (stdlib)
+# - zipfile (stdlib)
+# - subprocess (stdlib)
+# - argparse (stdlib)
+# - datetime (stdlib)
+# - dataclasses (stdlib, Python 3.7+)
+# - typing (stdlib, Python 3.5+)
+
+# Minimum Python version: 3.7+
+# (for dataclasses support)
