@@ -281,10 +281,18 @@ class SecurityScanner:
         script_files.extend(self.skill_dir.rglob('*.sh'))
         script_files.extend(self.skill_dir.rglob('*.bash'))
 
+        # Directories to exclude from scanning (dependencies, build artifacts)
+        excluded_dirs = {'node_modules', 'venv', '.venv', '__pycache__', 
+                        '.git', 'dist', 'build', '.eggs', '.tox'}
+        
         # Files to exclude from scanning (contain pattern definitions)
         excluded_files = {'security_scanner.py', 'quality_checker.py'}
 
         for script_path in script_files:
+            # Skip files in excluded directories
+            path_parts = set(script_path.relative_to(self.skill_dir).parts)
+            if path_parts.intersection(excluded_dirs):
+                continue
             # Skip files that contain pattern definitions
             if script_path.name in excluded_files:
                 continue
