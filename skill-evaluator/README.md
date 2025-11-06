@@ -1,6 +1,6 @@
 # skill-evaluator
 
-**Version**: 1.2.1  
+**Version**: 1.2.2  
 **Status**: Production Ready  
 **License**: MIT (or your choice)
 
