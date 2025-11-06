@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:code.claude.com)",
+      "Skill(skill-creator)",
+      "Bash(python:*)",
+      "Bash(set:*)",
+      "Bash(chcp 65001)",
+      "Bash(nul)",
+      "Bash(mkdir:*)",
+      "Bash(zip:*)",
+      "Bash(PYTHONIOENCODING=utf-8 python:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

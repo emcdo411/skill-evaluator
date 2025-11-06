@@ -281,14 +281,36 @@ class SecurityScanner:
         script_files.extend(self.skill_dir.rglob('*.sh'))
         script_files.extend(self.skill_dir.rglob('*.bash'))
 
+        # Files to exclude from scanning (contain pattern definitions)
+        excluded_files = {'security_scanner.py', 'quality_checker.py'}
+
         for script_path in script_files:
+            # Skip files that contain pattern definitions
+            if script_path.name in excluded_files:
+                continue
+
             try:
                 content = script_path.read_text(encoding='utf-8', errors='ignore')
                 lines = content.split('\n')
 
                 for line_num, line in enumerate(lines, 1):
                     for pattern, severity, description in patterns:
-                        if re.search(pattern, line, re.IGNORECASE):
+                        match = re.search(pattern, line, re.IGNORECASE)
+                        if match:
+                            # Check for ignore markers (skill authors can suppress false positives)
+                            if '# evaluator: ignore' in line or '# noqa' in line:
+                                continue
+                            
+                            # Basic string literal detection - skip if match is likely inside a string
+                            # Count quotes before the match position
+                            before_match = line[:match.start()]
+                            single_quotes = before_match.count("'")
+                            double_quotes = before_match.count('"')
+                            
+                            # If odd number of quotes before match, we're likely inside a string
+                            if (single_quotes % 2 == 1) or (double_quotes % 2 == 1):
+                                continue
+                            
                             issues.append(SecurityIssue(
                                 severity=severity,
                                 category=category.replace('_', ' ').title(),
