@@ -14,7 +14,7 @@ from typing import Dict, Any
 class ReportGenerator:
     """Generates formatted markdown reports from evaluation results."""
 
-    VERSION = "1.2.1"  # Fallback version
+    VERSION = "1.2.2"  # Fallback version
 
     def __init__(self, results: Dict[str, Any]):
         """Initialize generator with evaluation results."""
